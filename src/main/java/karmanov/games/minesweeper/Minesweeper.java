@@ -54,8 +54,31 @@ public class Minesweeper {
 
             if (row >= 0 && row <= HEIGHT && col >= 0 && col <= WIDTH) {
                 if (board[row][col] == MINE) return false;
+                if (board[row][col] == EMPTY) {
+                    openEmptyCells(board, moves, row, col);
+                    return true;
+                }
                 moves[row][col] = CELL_OPEN;
                 return true;
+            }
+        }
+    }
+
+    private void openEmptyCells(int[][] board, int[][] moves, int row, int col) {
+        for (int i = row - 1; i <= row + 1; i++) {
+            for (int j = col - 1; j <= col + 1; j++) {
+                if (i < 0 || i >= WIDTH || j < 0 || j >= HEIGHT) continue;
+                if (i == row && j == col) {
+                    moves[i][j] = CELL_OPEN;
+                    continue;
+                }
+                if (board[i][j] == EMPTY && moves[i][j] != CELL_OPEN) {
+                    moves[i][j] = CELL_OPEN;
+                    openEmptyCells(board, moves, i, j);
+                }
+                if (board[i][j] != EMPTY && board[i][j] != MINE && moves[i][j] != CELL_OPEN) {
+                    moves[i][j] = CELL_OPEN;
+                }
             }
         }
     }
